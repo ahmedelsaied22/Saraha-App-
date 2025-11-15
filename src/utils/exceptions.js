@@ -40,3 +40,9 @@ export class invalidOtpException extends Error {
         super("in-valid OTP", { cause: 409 })
     }
 }
+
+export class unAuthorizedException extends Error {
+    constructor() {
+        super("Un-Authorized Exception", { cause: 401 })
+    }
+}

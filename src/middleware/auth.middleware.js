@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { findById } from "../DB/DBServices.js";
 import { userModel } from "../DB/models/user.model.js";
-import { invalidTokenException } from "../utils/exceptions.js";
+import { invalidTokenException, unAuthorizedException } from "../utils/exceptions.js";
 import "dotenv/config";
 
 export const tokenTypes = {
@@ -38,3 +38,15 @@ export const auth = () => {
         next();
     };
 };
+
+export const allowTo = (...Roles) => {
+    return (req, res, next) => {
+        const user = req.user
+        console.log(user);
+
+        if (!Roles.includes(user.role)) {
+            throw new unAuthorizedException()
+        }
+        next()
+    }
+}

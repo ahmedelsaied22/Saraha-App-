@@ -10,8 +10,7 @@ const bootstrap = async (app, express) => {
     // app.use('/users', userRouter)
     app.use('/auth', authRouter)
 
-
-
+    app.use('/uploads', express.static('./uploads'))
 
     app.all("{/*urls}", (req, res, next) => {
         const url = req.params.urls;

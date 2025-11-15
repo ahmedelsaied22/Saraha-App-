@@ -1,3 +1,4 @@
+import { customAlphabet } from 'nanoid'
 import nodeMailer from 'nodemailer'
 
 export const sendEmail = async ({ to, subject, html }) => {
@@ -22,4 +23,10 @@ export const sendEmail = async ({ to, subject, html }) => {
     main().catch((err) => {
         console.log({ emailError: err });
     })
+}
+
+export const createOtp = () => {
+    const custom = customAlphabet('012345678')
+    const otp = custom(6)
+    return otp
 }

@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { isObjectIdOrHexString, isValidObjectId, model, Schema, Types } from "mongoose";
 import { hash, compare } from "../../utils/bcrypt.js";
 import { encryption, decryption } from "../../utils/crypto.js";
 
@@ -6,11 +6,29 @@ export const gender = {
     male: "male",
     female: "female"
 }
+Object.freeze(gender)
 
 export const role = {
     admin: "admin",
     user: "user"
 }
+Object.freeze(role)
+
+export const Providers = {
+    google: "google",
+    system: "system"
+}
+Object.freeze(Providers)
+
+const otpSchema = new Schema({
+    otp: String,
+    expiredAt: Date
+},
+    {
+        _id: false
+    })
+
+Object(otpSchema)
 
 const userSchema = new Schema({
     firstName: {
@@ -63,14 +81,21 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
-    emailOtp: {
-        otp: String,
-        expiredAt: Date
+    emailOtp: otpSchema,
+    oldEmailOtp: otpSchema,
+    newEmailOtp: otpSchema,
+    passwordOtp: otpSchema,
+    newEmail: String,
+    isDeleted: {
+        type: Boolean,
+        default: false
     },
-    passwordOtp: {
-        otp: String,
-        expiredAt: Date
-    }
+    deletedBy: {
+        type: Types.ObjectId,
+        ref: 'user'
+    },
+    profileImage: String
+
 }, {
     timestamps: true,
     toJSON: {
