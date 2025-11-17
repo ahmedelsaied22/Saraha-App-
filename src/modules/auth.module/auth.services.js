@@ -11,6 +11,7 @@ import { customAlphabet } from "nanoid"
 import { createOtp, sendEmail } from "../../utils/sendEmail/sendEmail.js"
 import { compare, hash } from "../../utils/bcrypt.js"
 import fs from 'fs/promises'
+import { destroySingleFile, uploadMultiFile, uploadSingleFile } from "../../utils/multer/cloud.services.js"
 
 export const signup = async (req, res, next) => {
     const { firstName, lastName, email, password, age, gender, role, phone } = req.body
@@ -178,6 +179,8 @@ export const refreshToken = async (req, res, next) => {
 export const getUserProfile = async (req, res, next) => {
     const user = req.user
     user.phone = decryption(user.phone)
+
+    user.profileImage = `${req.protocol}://${req.host}/${user.profileImage}`
 
     successHandler(res, { msg: "Done", data: user, status: 200 })
 }
@@ -411,7 +414,7 @@ export const hardDelete = async (req, res, next) => {
 
 export const profileImage = async (req, res, next) => {
     const user = req.user
-    const path = `${req.protocol}://${req.host}/${req.file.destination}/${req.file.filename}`
+    const path = `${req.file.destination}/${req.file.filename}`
 
     if (user.profileImage) {
         await fs.unlink(user.profileImage)
@@ -420,4 +423,39 @@ export const profileImage = async (req, res, next) => {
     await user.save()
 
     return successHandler(res, { msg: "Done", cause: 200 })
+}
+
+export const profileImageToCloud = async (req, res, next) => {
+    const user = req.user
+
+    if (user.profileImage.public_id) {
+        await destroySingleFile({ public_id: user.profileImage.public_id })
+    }
+
+    const { secure_url, public_id } = await uploadSingleFile({ path: req.file.path })
+
+    user.profileImage = {
+        secure_url,
+        public_id
+    }
+    await user.save()
+
+    return successHandler(res, { msg: "Done", data: { secure_url, public_id }, cause: 200 })
+}
+
+export const coverImageToCloud = async (req, res) => {
+
+    const user = req.user
+    const files = req.files
+
+    const paths = []
+    await files.map((file) => {
+        paths.push(file.path)
+    })
+    const images = await uploadMultiFile({ paths })
+
+    user.coverImages = images
+    await user.save()
+
+    return successHandler(res, { msg: "Done" })
 }

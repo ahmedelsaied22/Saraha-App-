@@ -1,6 +1,7 @@
 import Joi from "joi";
 import { gender, role } from "../DB/models/user.model.js";
 import mongoose from "mongoose";
+import { fileTypes } from "../utils/multer/multer.cloud.js";
 
 
 const checkId = (value, helpers) => {
@@ -23,4 +24,13 @@ export const generalValidation = {
     phone: Joi.string().min(10).max(13),
     otp: Joi.string().length(6),
     id: Joi.string().custom(checkId),
+    fieldname: Joi.string(),
+    originalname: Joi.string(),
+    encoding: Joi.string(),
+    mimetype: Joi.string().valid(...fileTypes.image),
+    destination: Joi.string(),
+    filename: Joi.string(),
+    path: Joi.string(),
+    size: Joi.number().max(10 * 1024 * 1024)
+
 }

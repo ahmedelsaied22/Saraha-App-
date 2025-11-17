@@ -5,7 +5,8 @@ import { allowTo, auth } from "../../middleware/auth.middleware.js";
 import { validation } from "../../middleware/validation.middleware.js";
 import * as authValidation from '../auth.module/auth.validation.js'
 import { role } from "../../DB/models/user.model.js";
-import { uploadFile } from "../../utils/multer/multer.js";
+import { uploadFile } from "../../utils/multer/multer.local.js";
+import { uploadFileToCloudinary } from "../../utils/multer/multer.cloud.js";
 
 router.post('/signup', validation(authValidation.signupSchema), authServices.signup)
 router.post('/confirmEmail', validation(authValidation.confirmEmailSchema), authServices.confirmEmail)
@@ -28,6 +29,26 @@ router.patch('/restore-user/:id', auth(), allowTo(role.admin), authServices.rest
 router.delete('/hard-delete', auth(), authServices.hardDelete)
 
 
-router.patch('/profile-image', auth(), uploadFile('profile-photos').single('profileImage'), authServices.profileImage)
+router.patch('/profile-image'
+    , auth()
+    , validation(authValidation.uploadFileSchema)
+    , uploadFile('profile-images')
+        .single('profileImage')
+    , authServices.profileImage)
+
+router.patch('/profile-image-cloudinary'
+    , auth()
+    , validation(authValidation.uploadFileSchema)
+    , uploadFileToCloudinary()
+        .single('image')
+    , authServices.profileImageToCloud)
+
+router.patch('/cover-images'
+    , auth()
+    , validation(authValidation.uploadFileSchema)
+    , uploadFileToCloudinary()
+        .array('coverImages', 5)
+    , authServices.coverImageToCloud)
+
 
 export default router

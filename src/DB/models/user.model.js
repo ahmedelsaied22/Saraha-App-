@@ -94,7 +94,15 @@ const userSchema = new Schema({
         type: Types.ObjectId,
         ref: 'user'
     },
-    profileImage: String
+    profileImage: {
+        secure_url: String,
+        public_id: String
+    },
+    coverImages: [{
+        secure_url: String,
+        public_id: String,
+        _id: false
+    }]
 
 }, {
     timestamps: true,

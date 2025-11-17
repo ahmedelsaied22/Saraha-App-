@@ -26,3 +26,14 @@ export const confirmEmailSchema = Joi.object({
 export const resendEmailOTPSchema = Joi.object({
     email: generalValidation.email.required()
 })
+
+export const uploadFileSchema = Joi.object({
+    fieldname: generalValidation.fieldname,
+    originalname: generalValidation.originalname,
+    encoding: generalValidation.encoding,
+    mimetype: generalValidation.mimetype,
+    destination: generalValidation.destination,
+    filename: generalValidation.filename,
+    path: generalValidation.path,
+    size: generalValidation.size
+})
