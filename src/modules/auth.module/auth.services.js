@@ -407,6 +407,17 @@ export const restoreUser = async (req, res, next) => {
 
 export const hardDelete = async (req, res, next) => {
     const user = req.user
+    const coverImages = user.coverImages
+    const profileImage = user.profileImage
+
+    if (user.profileImage) {
+        await destroySingleFile({ public_id: profileImage.public_id })
+    }
+    if (user.coverImages) {
+        coverImages.map(async (path) => {
+            await destroySingleFile({ public_id: path.public_id })
+        })
+    }
     await user.deleteOne()
 
     return successHandler(res, { data: "user deleted successfully", cause: 200 })

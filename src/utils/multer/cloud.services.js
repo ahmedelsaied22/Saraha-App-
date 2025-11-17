@@ -8,7 +8,6 @@ export const uploadSingleFile = async ({ path }) => {
 
 export const destroySingleFile = async ({ public_id }) => {
     await cloudinary.uploader.destroy(public_id)
-    console.log("deleted")
 }
 
 export const uploadMultiFile = async ({ paths = [] }) => {
