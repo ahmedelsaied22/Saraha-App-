@@ -1,14 +1,18 @@
 import 'dotenv/config'
 import { ConnetDB } from "./DB/ConnectDB.js";
+import userRouter from './modules/user.module/user.controller.js'
 import authRouter from './modules/auth.module/auth.controller.js';
+import messageRouter from './modules/message.module/message.controller.js';
+import chalk from 'chalk';
 
 const bootstrap = async (app, express) => {
     const port = Number(process.env.PORT);
     app.use(express.json());
     ConnetDB()
 
-    // app.use('/users', userRouter)
+    app.use('/users', userRouter)
     app.use('/auth', authRouter)
+    app.use('/message', messageRouter)
 
     app.use('/uploads', express.static('./uploads'))
 
@@ -28,7 +32,7 @@ const bootstrap = async (app, express) => {
     })
 
     app.listen(port, () => {
-        console.log(`Server started on port:`, port);
+        console.log(chalk.blue(`Server started on port:`, port));
     });
 };
 

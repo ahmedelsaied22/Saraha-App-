@@ -423,18 +423,6 @@ export const hardDelete = async (req, res, next) => {
     return successHandler(res, { data: "user deleted successfully", cause: 200 })
 }
 
-export const profileImage = async (req, res, next) => {
-    const user = req.user
-    const path = `${req.file.destination}/${req.file.filename}`
-
-    if (user.profileImage) {
-        await fs.unlink(user.profileImage)
-    }
-    user.profileImage = path
-    await user.save()
-
-    return successHandler(res, { msg: "Done", cause: 200 })
-}
 
 export const profileImageToCloud = async (req, res, next) => {
     const user = req.user

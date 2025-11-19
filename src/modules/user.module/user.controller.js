@@ -1,12 +1,10 @@
-import { Router } from "express";
+import { Router } from "express"
+import * as userServices from "./user.services.js"
 const router = Router()
-import * as userServices from './user.services.js'
+import messageRouter from '../message.module/message.controller.js'
 
-router.post('/signup', userServices.signup)
-router.get('/login', userServices.login)
-router.get('/getAllUsers', userServices.getAllUsers)
-router.patch('/updateUser', userServices.editUser)
-router.delete('/deleteUser/:id', userServices.deleteUser)
+router.use('/:id/messages', messageRouter)
 
+router.get('/:id', userServices.getUserById)
 
-export default router;
+export default router
