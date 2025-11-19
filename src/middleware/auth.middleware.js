@@ -42,7 +42,6 @@ export const auth = () => {
 export const allowTo = (...Roles) => {
     return (req, res, next) => {
         const user = req.user
-        console.log(user);
 
         if (!Roles.includes(user.role)) {
             throw new unAuthorizedException()

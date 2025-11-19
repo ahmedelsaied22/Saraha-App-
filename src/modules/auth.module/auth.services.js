@@ -340,16 +340,12 @@ export const confirmNewEmail = async (req, res, next) => {
     const user = req.user
 
     const { oldEmailOtp, newEmailOtp } = req.body
-    console.log(user.newEmailOtp);
-
 
     if (!compare(oldEmailOtp, user.oldEmailOtp.otp) || !compare(newEmailOtp, user.newEmailOtp.otp)) {
         return new invalidCredentionals()
     }
 
     user.email = user.newEmail
-
-    console.log(user.newEmail);
 
     user.newEmail = undefined
     user.newEmailOtp = undefined
@@ -362,7 +358,6 @@ export const confirmNewEmail = async (req, res, next) => {
 export const softDelete = async (req, res, next) => {
     const id = req.params.id
     const user = req.user
-    console.log(id);
 
     const emailExist = await userModel.findOne({
         isDeleted: false,
